@@ -54,7 +54,7 @@ export default class App extends React.Component {
             })
         });
 
-        this;chabok.on('error', _ => {
+        this.chabok.on('error', _ => {
             this.setState({
                 connectionColor: 'red',
                 connectionState: 'Error'
