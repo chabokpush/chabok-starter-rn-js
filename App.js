@@ -39,6 +39,11 @@ export default class App extends React.Component {
         this.chabok = new chabokpush(authConfig, options);
 
         this.chabok.on('message', msg => {
+            var phone = msg && msg.publishId && msg.publishId.split('/')[0];
+            if (!phone) {
+                phone = msg.channel.split('/')[0];
+            }
+            this.sendLocalPushNotification(msg,phone);
             var messageJson = this.getMessages() + JSON.stringify(msg);
             this.setState({messageReceived: messageJson});
         });
@@ -81,7 +86,7 @@ export default class App extends React.Component {
                 }
             },
             // ANDROID ONLY: (optional) GCM Sender ID.
-            senderID: "YOUR_SENDER_ID",
+            senderID: "339811759516",
             permissions: {
                 alert: true,
                 badge: true,
@@ -92,8 +97,33 @@ export default class App extends React.Component {
         });
     }
 
+    sendLocalPushNotification(msg, user) {
+        var notifObject = {
+            show_in_foreground: true,
+            local_notification: true,
+            priority: "high",
+            /* Android Only Properties */
+            ticker: "My Notification Ticker", // (optional)
+            autoCancel: true, // (optional) default: true
+            largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
+            smallIcon: "ic_notification", // (optional) default: "ic_notification" with fallback for "ic_launcher"
+            bigText: msg.content, // (optional) default: "message" prop
+            color: "red", // (optional) default: system default
+            vibrate: true, // (optional) default: true
+            vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000
+            group: "group", // (optional) add group to message
+            ongoing: false, // (optional) set whether this is an "ongoing" notification
+            title: `New message from ${user}`, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
+            message: msg.content, // (required)
+            playSound: true, // (optional) default: true
+            soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+        };
+        alert(JSON.stringify(notifObject));
+        PushNotification.localNotification(notifObject);
+    }
+
     //Register
-    registerButtonTapped() {
+    onRegisterTapped() {
         const {userId} = this.state;
         if (userId) {
             this.chabok.register(userId);
