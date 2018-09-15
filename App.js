@@ -1,8 +1,8 @@
 import React from 'react';
 import chabokpush from 'chabokpush-rn';
 import {StyleSheet, Button, Text, View, TextInput} from 'react-native';
+import PushNotification from 'react-native-push-notification';
 
-const PushNotification = require('react-native-push-notification');
 export default class App extends React.Component {
 
     constructor(){
