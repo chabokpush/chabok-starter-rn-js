@@ -46,6 +46,21 @@ export default class App extends React.Component {
             var messageJson = this.getMessages() + JSON.stringify(msg);
             this.setState({messageReceived: messageJson});
         });
+
+        this.chabok.on('closed', _ => {
+            this.setState({
+                connectionColor: 'red',
+                connectionState: 'Closed'
+            })
+        });
+
+        this;chabok.on('error', _ => {
+            this.setState({
+                connectionColor: 'red',
+                connectionState: 'Error'
+            })
+        });
+
         this.chabok.on('connecting', _ => {
             this.setState({
                 connectionColor: 'yellow',
