@@ -38,9 +38,9 @@ export default class App extends React.Component {
         this.chabok = new chabokpush(authConfig, options);
 
         this.chabok.on('message', msg => {
-            var [phone] = msg && msg.publishId && msg.publishId.split('/');
+            var phone = msg && msg.publishId && msg.publishId.split('/')[0];
             if (!phone) {
-                [phone] = msg.channel.split('/');
+                phone = msg.channel.split('/')[0];
             }
             this.sendLocalPushNotification(msg,phone);
             var messageJson = this.getMessages() + JSON.stringify(msg);
@@ -245,11 +245,11 @@ export default class App extends React.Component {
                         onPress={this.onUnregisterTapped.bind(this)}/>
                     <Button
                         style={styles.button}
-                        title="Subscribe"
+                        title="Sub"
                         onPress={this.onSubscribeTapped.bind(this)}/>
                     <Button
                         style={styles.button}
-                        title="Unsubscribe"
+                        title="Unsub"
                         onPress={this.onUnsubscribeTapped.bind(this)}/>
                 </View>
 
@@ -326,7 +326,9 @@ const styles = StyleSheet.create({
         marginLeft: 4
     },
     button: {
-        padding: 2
+        padding: 2,
+        marginLeft: 2,
+        marginRight: 2
     },
     textView:{
       borderColor: 'rgba(127,127,127,0.3)',
