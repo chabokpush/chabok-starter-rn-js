@@ -83,6 +83,12 @@ export default class App extends React.Component {
                     this.chabok.setPushNotificationToken(token)
                 }
             },
+            // (required) Called when a remote or local notification is opened or received
+            onNotification: function(notification) {
+                console.warn( 'NOTIFICATION:', notification );
+                // required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
+                notification.finish(PushNotificationIOS.FetchResult.NoData);
+            },
             senderID: "339811759516", // ANDROID ONLY: (optional) GCM Sender ID.
             permissions: {
                 alert: true,
