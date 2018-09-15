@@ -197,7 +197,7 @@ export default class App extends React.Component {
     }
 
     getUserId() {
-        return this.stats.userId || ''
+        return this.state.userId || ''
     }
 
     getMessages() {
@@ -208,7 +208,7 @@ export default class App extends React.Component {
     }
 
     getTagName() {
-        return this.stats.tagName || '';
+        return this.state.tagName || '';
     }
 
     getMessageBody() {
