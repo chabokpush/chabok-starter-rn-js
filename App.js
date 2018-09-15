@@ -101,17 +101,17 @@ export default class App extends React.Component {
             console.warn('The userId is undefined');
         }
     }
-    unregisterButtonTapped() {
+    onUnregisterTapped() {
         this.chabok.unregister();
     }
-    subscribeButtonTapped() {
+    onSubscribeTapped() {
         if (this.state.channel) {
             this.chabok.subscribe(this.state.channel);
         } else {
             console.warn('The channel name is undefined');
         }
     }
-    unsubscribeButtonTapped() {
+    onUnsubscribeTapped() {
         if (this.state.channel) {
             this.chabok.unSubscribe(this.state.channel);
         } else {
@@ -120,7 +120,7 @@ export default class App extends React.Component {
     }
 
     //Publish
-    publishButtonTapped() {
+    onPublishTapped() {
         var msg = {
             channel: "default",
             user: this.state.userId,
@@ -128,12 +128,12 @@ export default class App extends React.Component {
         };
         this.chabok.publish(msg)
     }
-    publishEventButtonTapped() {
+    onPublishEventTapped() {
         this.chabok.publishEvent('batteryStatus', {'state':'charging'});
     }
 
     //Tag
-    addTagButtonTapped() {
+    onAddTagTapped() {
         if (this.state.tagName) {
             this.chabok.addTag(this.state.tagName)
                 .then(res => {
@@ -144,7 +144,7 @@ export default class App extends React.Component {
             console.warn('The tagName is undefined');
         }
     }
-    removeTagButtonTapped() {
+    onRemoveTagTapped() {
         if (this.state.tagName) {
             this.chabok.removeTag(this.state.tagName).then(res => {
                 alert(this.state.tagName + ' tag was removed from ' + this.getUserId() + ' user with '+ res.count + ' devices');
@@ -156,16 +156,16 @@ export default class App extends React.Component {
     }
 
     //Track
-    addToCartTrackButtonTapped() {
+    onAddToCartTrackTapped() {
         this.chabok.track('addToCart',{'order':'200'});
     }
-    purchaseTrackButtonTapped() {
+    onPurchaseTrackTapped() {
         this.chabok.track('purchase',{'price':'15000'});
     }
-    commentTrackButtonTapped() {
+    onCommentTrackTapped() {
         this.chabok.track('comment',{'podtId':'1234555677754d'});
     }
-    likeTrackButtonTapped() {
+    onLikeTrackTapped() {
         this.chabok.track('like',{'podtId':'1234555677754d'});
     }
 
@@ -207,11 +207,11 @@ export default class App extends React.Component {
                     <TextInput
                         style={styles.input}
                         placeholder="User id"
-                        width="80%"
+                        width="60%"
                         onChangeText={(text) => this.setState({userId:text})}>{this.getUserId()}</TextInput>
                     <TextInput
                         style={styles.input}
-                        width="20%"
+                        width="40%"
                         placeholder="Channel name"
                         onChangeText={(text) => this.setState({channel:text})}/>
                 </View>
@@ -220,19 +220,19 @@ export default class App extends React.Component {
                     <Button
                         style={styles.button}
                         title="Register"
-                        onPress={()=>this.registerButtonTapped()}/>
+                        onPress={()=>this.onRegisterTapped()}/>
                     <Button
                         style={styles.button}
                         title="Unregister"
-                        onPress={()=>this.unregisterButtonTapped()}/>
+                        onPress={()=>this.onUnregisterTapped()}/>
                     <Button
                         style={styles.button}
                         title="Subscribe"
-                        onPress={()=>this.subscribeButtonTapped()}/>
+                        onPress={()=>this.onSubscribeTapped()}/>
                     <Button
                         style={styles.button}
                         title="Unsubscribe"
-                        onPress={()=>this.unsubscribeButtonTapped()}/>
+                        onPress={()=>this.onUnsubscribeTapped()}/>
                 </View>
 
                 <View style={styles.nestedButtonView}>
@@ -245,11 +245,11 @@ export default class App extends React.Component {
                     <Button
                         style={styles.button}
                         title="Publish"
-                        onPress={()=>this.publishButtonTapped()}/>
+                        onPress={()=>this.onPublishTapped()}/>
                     <Button
                         style={styles.button}
                         title="PublishEvent"
-                        onPress={()=>this.publishEventButtonTapped()}/>
+                        onPress={()=>this.onPublishEventTapped()}/>
                 </View>
                 <View style={styles.nestedButtonView}>
                     <TextInput
@@ -262,20 +262,20 @@ export default class App extends React.Component {
                     <Button
                         style={styles.button}
                         title="AddTag"
-                        onPress={()=>this.addTagButtonTapped()}/>
+                        onPress={()=>this.onAddTagTapped()}/>
                     <Button
                         style={styles.button}
                         title="RemoveTag"
-                        onPress={()=>this.removeTagButtonTapped()}/>
+                        onPress={()=>this.onRemoveTagTapped()}/>
                 </View>
                 <View style={styles.nestedButtonView}>
                     <Text>Track user: </Text>
                 </View>
                 <View style={styles.nestedButtonView}>
-                    <Button style={styles.button} title="AddToCart" onPress={()=>this.addToCartTrackButtonTapped()}/>
-                    <Button style={styles.button} title="Purchase" onPress={()=>this.purchaseTrackButtonTapped()}/>
-                    <Button style={styles.button} title="Comment" onPress={()=>this.commentTrackButtonTapped()}/>
-                    <Button style={styles.button} title="Like" onPress={()=>this.likeTrackButtonTapped()}/>
+                    <Button style={styles.button} title="AddToCart" onPress={()=>this.onAddToCartTrackTapped()}/>
+                    <Button style={styles.button} title="Purchase" onPress={()=>this.onPurchaseTrackTapped()}/>
+                    <Button style={styles.button} title="Comment" onPress={()=>this.onCommentTrackTapped()}/>
+                    <Button style={styles.button} title="Like" onPress={()=>this.onLikeTrackTapped()}/>
                 </View>
                 <View>
                     <Text style={styles.textView}>{this.getMessages()}</Text>
@@ -322,6 +322,8 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(127,127,127,0.3)',
         borderWidth: 1,
         borderRadius: 4,
-        marginBottom: 0
+        marginBottom: 0,
+        marginRight: 5,
+        marginLeft: 0
     }
 });
