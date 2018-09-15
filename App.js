@@ -1,7 +1,7 @@
 import React from 'react';
 import chabokpush from 'chabokpush-rn';
-import {StyleSheet, Button, Text, View, TextInput} from 'react-native';
 import PushNotification from 'react-native-push-notification';
+import {StyleSheet, Button, Text, View, TextInput} from 'react-native';
 
 export default class App extends React.Component {
 
@@ -38,9 +38,9 @@ export default class App extends React.Component {
         this.chabok = new chabokpush(authConfig, options);
 
         this.chabok.on('message', msg => {
-            var phone = msg && msg.publishId && msg.publishId.split('/')[0];
+            var [phone] = msg && msg.publishId && msg.publishId.split('/');
             if (!phone) {
-                phone = msg.channel.split('/')[0];
+                [phone] = msg.channel.split('/');
             }
             this.sendLocalPushNotification(msg,phone);
             var messageJson = this.getMessages() + JSON.stringify(msg);
@@ -95,12 +95,12 @@ export default class App extends React.Component {
     }
 
     sendLocalPushNotification(msg, user) {
-        var notifObject = {
+        const notifObject = {
             show_in_foreground: true,
             local_notification: true,
             priority: "high",
             message: msg.content,
-          /* Android Only Properties */
+            /* Android Only Properties */
             ticker: "My Notification Ticker", // (optional)
             autoCancel: true, // (optional) default: true
             largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
