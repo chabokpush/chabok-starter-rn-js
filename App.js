@@ -19,7 +19,6 @@ export default class App extends React.Component {
         };
     }
 
-    //Init
     componentDidMount(){
         this.initChabok();
         this.initPushNotification();
@@ -68,11 +67,10 @@ export default class App extends React.Component {
         });
 
         this.chabok.getUserId()
-            .then(res => {
-                if (res) {
-                    this.setState({userId:res});
-                    this.chabok.register(res);
-
+            .then(userId => {
+                if (userId) {
+                    this.setState({userId});
+                    this.chabok.register(userId);
                 }
             })
             .catch();
@@ -80,13 +78,12 @@ export default class App extends React.Component {
 
     initPushNotification() {
         PushNotification.configure({
-            onRegister:  (token)=> {
-                if(Object.keys(token)){
-                    this.chabok.setPushNotificationToken(token.token)
+            onRegister:  ({token}) => {
+                if(token){
+                    this.chabok.setPushNotificationToken(token)
                 }
             },
-            // ANDROID ONLY: (optional) GCM Sender ID.
-            senderID: "339811759516",
+            senderID: "339811759516", // ANDROID ONLY: (optional) GCM Sender ID.
             permissions: {
                 alert: true,
                 badge: true,
@@ -102,7 +99,8 @@ export default class App extends React.Component {
             show_in_foreground: true,
             local_notification: true,
             priority: "high",
-            /* Android Only Properties */
+            message: msg.content,
+          /* Android Only Properties */
             ticker: "My Notification Ticker", // (optional)
             autoCancel: true, // (optional) default: true
             largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
@@ -114,15 +112,13 @@ export default class App extends React.Component {
             group: "group", // (optional) add group to message
             ongoing: false, // (optional) set whether this is an "ongoing" notification
             title: `New message from ${user}`, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
-            message: msg.content, // (required)
             playSound: true, // (optional) default: true
             soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
         };
-        alert(JSON.stringify(notifObject));
         PushNotification.localNotification(notifObject);
     }
 
-    //Register
+    //  ----------------- Register Group -----------------
     onRegisterTapped() {
         const {userId} = this.state;
         if (userId) {
@@ -149,61 +145,59 @@ export default class App extends React.Component {
         }
     }
 
-    //Publish
+    // ----------------- Publish Group -----------------
     onPublishTapped() {
-        var msg = {
+        const msg = {
             channel: "default",
             user: this.state.userId,
-            content: this.state.messageBody
+            content: this.state.messageBody || 'Hello world'
         };
         this.chabok.publish(msg)
     }
     onPublishEventTapped() {
-        this.chabok.publishEvent('batteryStatus', {'state':'charging'});
+        this.chabok.publishEvent('batteryStatus', {state: 'charging'});
     }
 
-    //Tag
-    onAddTagTapped() {
+  //  ----------------- Tag Group -----------------
+  onAddTagTapped() {
         if (this.state.tagName) {
             this.chabok.addTag(this.state.tagName)
-                .then(res => {
-                    alert(this.state.tagName + ' tag was assign to ' + this.getUserId() + ' user with '+ res.count + ' devices');
+                .then(({count}) => {
+                    alert(this.state.tagName + ' tag was assign to ' + this.getUserId() + ' user with '+ count + ' devices');
                 })
-                .catch(err => console.warn("An error happend adding tag ..."));
+                .catch(_ => console.warn("An error happend adding tag ..."));
         } else {
             console.warn('The tagName is undefined');
         }
     }
     onRemoveTagTapped() {
         if (this.state.tagName) {
-            this.chabok.removeTag(this.state.tagName).then(res => {
-                alert(this.state.tagName + ' tag was removed from ' + this.getUserId() + ' user with '+ res.count + ' devices');
-            })
-                .catch(err => console.warn("An error happend removing tag ..."));;
+            this.chabok.removeTag(this.state.tagName)
+                .then(({count}) => {
+                    alert(this.state.tagName + ' tag was removed from ' + this.getUserId() + ' user with '+ count + ' devices');
+                })
+                .catch(_ => console.warn("An error happend removing tag ..."));
         } else {
             console.warn('The tagName is undefined');
         }
     }
 
-    //Track
-    onAddToCartTrackTapped() {
-        this.chabok.track('addToCart',{'order':'200'});
+  //  ----------------- Track Group -----------------
+  onAddToCartTrackTapped() {
+        this.chabok.track('AddToCard',{order:'200'});
     }
     onPurchaseTrackTapped() {
-        this.chabok.track('purchase',{'price':'15000'});
+        this.chabok.track('Purchase',{price:'15000'});
     }
     onCommentTrackTapped() {
-        this.chabok.track('comment',{'podtId':'1234555677754d'});
+        this.chabok.track('Comment',{postId:'1234555677754d'});
     }
     onLikeTrackTapped() {
-        this.chabok.track('like',{'podtId':'1234555677754d'});
+        this.chabok.track('Like',{postId:'1234555677754d'});
     }
 
     getUserId() {
-        if(this.state.userId){
-            return this.state.userId;
-        }
-        return '';
+        return this.stats.userId || ''
     }
 
     getMessages() {
@@ -214,17 +208,11 @@ export default class App extends React.Component {
     }
 
     getTagName() {
-        if (this.state.tagName){
-            return this.state.tagName;
-        }
-        return '';
+        return this.stats.tagName || '';
     }
 
     getMessageBody() {
-        if (this.state.messageBody){
-            return this.state.messageBody;
-        }
-        return '';
+        return this.state.messageBody || '';
     }
     render() {
         return (
@@ -238,74 +226,74 @@ export default class App extends React.Component {
                         style={styles.input}
                         placeholder="User id"
                         width="60%"
-                        onChangeText={(text) => this.setState({userId:text})}>{this.getUserId()}</TextInput>
+                        onChangeText={userId => this.setState({userId})}>{this.getUserId()}</TextInput>
                     <TextInput
                         style={styles.input}
                         width="40%"
                         placeholder="Channel name"
-                        onChangeText={(text) => this.setState({channel:text})}/>
+                        onChangeText={channel => this.setState({channel})}/>
                 </View>
 
                 <View style={styles.nestedButtonView}>
                     <Button
                         style={styles.button}
                         title="Register"
-                        onPress={()=>this.onRegisterTapped()}/>
+                        onPress={this.onRegisterTapped.bind(this)}/>
                     <Button
                         style={styles.button}
                         title="Unregister"
-                        onPress={()=>this.onUnregisterTapped()}/>
+                        onPress={this.onUnregisterTapped.bind(this)}/>
                     <Button
                         style={styles.button}
                         title="Subscribe"
-                        onPress={()=>this.onSubscribeTapped()}/>
+                        onPress={this.onSubscribeTapped.bind(this)}/>
                     <Button
                         style={styles.button}
                         title="Unsubscribe"
-                        onPress={()=>this.onUnsubscribeTapped()}/>
+                        onPress={this.onUnsubscribeTapped.bind(this)}/>
                 </View>
 
                 <View style={styles.nestedButtonView}>
                     <TextInput
                         style={styles.input}
-                        onChangeText={(text) => this.setState({messageBody:text})}
+                        onChangeText={messageBody => this.setState({messageBody})}
                         width="100%">{this.getMessageBody()}</TextInput>
                 </View>
                 <View style={styles.nestedButtonView}>
                     <Button
                         style={styles.button}
                         title="Publish"
-                        onPress={()=>this.onPublishTapped()}/>
+                        onPress={this.onPublishTapped.bind(this)}/>
                     <Button
                         style={styles.button}
                         title="PublishEvent"
-                        onPress={()=>this.onPublishEventTapped()}/>
+                        onPress={this.onPublishEventTapped.bind(this)}/>
                 </View>
                 <View style={styles.nestedButtonView}>
                     <TextInput
                         style={styles.input}
                         placeholder='Tag name'
-                        onChangeText={(text) => this.setState({tagName:text})}
+                        onChangeText={tagName => this.setState({tagName})}
                         width='100%'>{this.getTagName()}</TextInput>
                 </View>
                 <View style={styles.nestedButtonView}>
                     <Button
                         style={styles.button}
                         title="AddTag"
-                        onPress={()=>this.onAddTagTapped()}/>
+                        onPress={this.onAddTagTapped.bind(this)}/>
                     <Button
                         style={styles.button}
                         title="RemoveTag"
-                        onPress={()=>this.onRemoveTagTapped()}/>
+                        onPress={this.onRemoveTagTapped.bind(this)}/>
                 </View>
                 <View style={styles.nestedButtonView}>
                     <Text>Track user: </Text>
                 </View>
                 <View style={styles.nestedButtonView}>
-                    <Button style={styles.button} title="AddToCart" onPress={()=>this.onAddToCartTrackTapped()}/>
-                    <Button style={styles.button} title="Purchase" onPress={()=>this.onPurchaseTrackTapped()}/>
-                    <Button style={styles.button} title="Comment" onPress={()=>this.onCommentTrackTapped()}/>
-                    <Button style={styles.button} title="Like" onPress={()=>this.onLikeTrackTapped()}/>
+                    <Button style={styles.button} title="AddToCart" onPress={this.onAddToCartTrackTapped.bind(this)}/>
+                    <Button style={styles.button} title="Purchase"  onPress={this.onPurchaseTrackTapped.bind(this)}/>
+                    <Button style={styles.button} title="Comment"   onPress={this.onCommentTrackTapped.bind(this)}/>
+                    <Button style={styles.button} title="Like"      onPress={this.onLikeTrackTapped.bind(this)}/>
                 </View>
                 <View>
                     <Text style={styles.textView}>{this.getMessages()}</Text>
