@@ -6,7 +6,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 `git clone https://github.com/chabokpush/chabok-starter-rn-js.git`
 
-2. Run the below command :
+2. To install **node_modules** use below command :
 ```
 npm install
 ```
@@ -14,12 +14,12 @@ or
 ```
 yarn install
 ```
-And link the libraries:
+3. And **link** the libraries:
 ```
 react-native link
 ```
 
-2. Build and run the project:
+4. **Build** and run the project:
 ```
 npm run ios
 ```
@@ -28,7 +28,7 @@ or
 yarn run ios
 ```
 
-3. You can login with [Test environment](https://sandbox.push.adpdigital.com/login) to see the starter app info in the panel.
+5. You can login with [Test environment](https://sandbox.push.adpdigital.com/login) to see the starter app info in the panel.
 
 > Please use the following account
 >
