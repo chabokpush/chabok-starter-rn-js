@@ -104,7 +104,7 @@ export default class App extends React.Component {
                 // required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
                 notification.finish(PushNotificationIOS.FetchResult.NoData);
             },
-            senderID: "339811759516", // ANDROID ONLY: (optional) GCM Sender ID.
+            senderID: "839879285435", // ANDROID ONLY: (optional) GCM Sender ID.
             permissions: {
                 alert: true,
                 badge: true,
