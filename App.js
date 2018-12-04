@@ -1,5 +1,6 @@
 import React from 'react';
 import chabokpush from 'chabokpush-rn';
+import { PushNotificationIOS } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import {StyleSheet, Button, Text, View, TextInput} from 'react-native';
 
