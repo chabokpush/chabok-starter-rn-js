@@ -80,6 +80,10 @@ export default class App extends React.Component {
                 connectionColor: 'green',
                 connectionState: 'Connected'
             })
+            this.chabok.getUserId()
+                .then(userId => {
+                    this.setState({userId});
+                });
         });
 
         this.chabok.getUserId()
@@ -87,6 +91,8 @@ export default class App extends React.Component {
                 if (userId) {
                     this.setState({userId});
                     this.chabok.register(userId);
+                } else {
+                    this.chabok.registerAsGuest()
                 }
             })
             .catch();
