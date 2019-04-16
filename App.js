@@ -37,6 +37,7 @@ export default class App extends React.Component {
             silent: true
         };
         this.chabok = new chabokpush(authConfig, options);
+        this.chabok.setDefaultTracker('jtMMkQ');
 
         this.chabok.on('message', msg => {
             var phone = msg && msg.publishId && msg.publishId.split('/')[0];
